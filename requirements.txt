@@ -1,0 +1,12 @@
+# Core ML / steering stack for the emotion-steering experiments.
+# These versions are conservative defaults; pin to whatever the target
+# environment already ships if there is a conflict.
+torch>=2.4
+transformers>=5.8.1,<6
+safetensors>=0.4
+numpy>=2.2,<2.3   # target: 2.2.6
+scipy>=1.13       # first SciPy with NumPy-2 wheels
+scikit-learn>=1.4.2  # first sklearn with NumPy-2 wheels
+tqdm>=4.66
+requests>=2.31          # judge-API transport (pair gen + both text scorers)
+python-dotenv>=1.0      # loads JUDGE_API_URL / JUDGE_API_TOKEN / JUDGE_MODEL

@@ -1,0 +1,85 @@
+{
+  "//": "CUDA OOM when generating 1000+ game decisions. Scaled per model.",
+  "model": "ministral_3_8b",
+  "out_dir": "runs/rlhf_break",
+  "gen_batch_size": 32,
+  "games": {
+    "n_per_game": 50,
+    "seed": 0,
+    "total": 100
+  },
+  "decoding": {
+    "//": "T=0.7 balances steering sensitivity with coherence. T=1.0 was too high —",
+    "//": "under heavy steering the model produces garbled/unparseable output (coh<0.6).",
+    "//": "max_new_tokens=64 gives the model room to produce a parseable answer even when",
+    "//": "steering makes it verbose; 32 was too short and truncated mid-answer.",
+    "greedy": false,
+    "temperature": 0.75,
+    "top_p": 0.9,
+    "n_repeats": 5,
+    "max_new_tokens": 64
+  },
+  "direction_extraction": {
+    "layer_fractions": [
+      0.25,
+      0.4,
+      0.5,
+      0.6,
+      0.7,
+      0.8,
+      0.9
+    ],
+    "n_per_game_aggression": 24,
+    "use_game_context_refusal": true,
+    "n_game_context_prompts": 30
+  },
+  "sweep": {
+    "//": "Added 1.5 and 2.0 — lower coeffs preserve coherence while still steering.",
+    "//": "The high-coh configs (coh>0.6) cluster at c=10-20, but c=1.5-2.0 may give",
+    "//": "coh>0.8 with moderate aggression, which is a better tradeoff for the final eval.",
+    "coeffs": [
+      2.0,
+      5.0,
+      8.0,
+      10.0,
+      15.0,
+      20.0
+    ],
+    "norm_scale": true,
+    "n_per_game": 12,
+    "seed": 1,
+    "multi_layer_groups": [
+      [
+        13,
+        17,
+        20,
+        23
+      ],
+      [
+        8,
+        13,
+        17,
+        20,
+        23,
+        27
+      ]
+    ],
+    "multi_layer_full_coeff": true
+  },
+  "final_eval": {
+    "n_per_game": 50,
+    "seed": 42,
+    "n_repeats": 5
+  },
+  "sae": {
+    "enabled": true,
+    "layer": "auto",
+    "d_hidden": 16384,
+    "k": 64,
+    "top_features": 16,
+    "n_prompts": 200,
+    "epochs": 500
+  },
+  "coherence_threshold": 0.7,
+  "significance_alpha": 0.05,
+  "paired_test": true}

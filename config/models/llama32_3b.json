@@ -1,0 +1,18 @@
+// Llama-3.2-3B-Instruct — compact Llama model for behavioral experiments.
+{
+  "model": {
+    "id": "llama32_3b",
+    "family": "llama",
+    "hf_name": "meta-llama/Llama-3.2-3B-Instruct",
+    "dtype": "bfloat16",
+    "device_map": "cuda:0",
+    "num_layers": 28,
+    "hidden_size": 3072,
+    "residual_module": "model.layers.{i}",
+    "uses_chat_template": true
+  },
+
+  "sae": {
+    "enabled": false
+  }
+}

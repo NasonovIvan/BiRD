@@ -1,0 +1,30 @@
+// Gemma-3-12B-IT — next-gen Gemma; scale axis within the Gemma 3 family.
+//
+// NOTE: unlike Gemma 2, the gemma-3-12b-it checkpoint has model_type "gemma3",
+// so AutoModelForCausalLM loads Gemma3ForConditionalGeneration (the multimodal
+// class), NOT Gemma3ForCausalLM (the text-only class, mapped to "gemma3_text").
+// Gemma3ForConditionalGeneration.model is a Gemma3Model which stores the text
+// decoder under .language_model (a Gemma3TextModel with .layers). So the
+// residual-stream hook point is model.language_model.layers.{i}, not
+// model.layers.{i} (which fails with
+// "AttributeError: 'Gemma3Model' object has no attribute 'layers'").
+// This is the same in transformers 4.57.x and 5.x — upgrading does not fix it.
+{
+  "model": {
+    "id": "gemma3_12b",
+    "family": "gemma3",
+    "hf_name": "google/gemma-3-12b-it",
+    "dtype": "bfloat16",
+    "device_map": "cuda:0",          // ~24 GB, single A100
+    "num_layers": 36,
+    "hidden_size": 3840,
+    "residual_module": "model.language_model.layers.{i}",
+    "uses_chat_template": true
+  },
+
+  "sae": {
+    // No public GemmaScope SAE release for Gemma 3 yet; enable if one becomes available.
+    "enabled": false,
+    "provider": "sae_lens"
+  }
+}

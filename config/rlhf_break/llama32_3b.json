@@ -1,0 +1,105 @@
+{
+  "//": "CUDA OOM when generating 1000+ game decisions. Scaled per model.",
+  "model": "llama32_3b",
+  "out_dir": "runs/rlhf_break",
+  "gen_batch_size": 64,
+  "games": {
+    "n_per_game": 50,
+    "seed": 0,
+    "total": 100
+  },
+  "decoding": {
+    "//": "Higher temperature = more sensitive to steering. T=1.0 lets small logit shifts flip decisions.",
+    "greedy": false,
+    "temperature": 1.0,
+    "top_p": 0.95,
+    "n_repeats": 5
+  },
+  "direction_extraction": {
+    "layer_fractions": [
+      0.25,
+      0.4,
+      0.5,
+      0.6,
+      0.7,
+      0.8,
+      0.9
+    ],
+    "n_per_game_aggression": 24,
+    "use_game_context_refusal": true,
+    "n_game_context_prompts": 30
+  },
+  "sweep": {
+    "//": "Gemma models need this (large RMSNorm residuals); absolute coeff<=20 is invisible. SPEED: sweep.n_repeats decoupled from decoding.n_repeats (search phase only; final_eval always re-measures the winner at full decoding.n_repeats=5).",
+    "coeffs": [
+      3.0,
+      5.0,
+      8.0,
+      10.0,
+      12.0,
+      15.0,
+      20.0
+    ],
+    "norm_scale": true,
+    "n_per_game": 12,
+    "seed": 1,
+    "n_repeats": 2,
+    "multi_layer_groups": [
+      [
+        10,
+        14,
+        17,
+        19
+      ],
+      [
+        7,
+        10,
+        14,
+        17,
+        19,
+        22
+      ]
+    ],
+    "multi_layer_full_coeff": true
+  },
+  "final_eval": {
+    "n_per_game": 50,
+    "seed": 42,
+    "n_repeats": 5
+  },
+  "sae": {
+    "enabled": true,
+    "layer": "auto",
+    "d_hidden": 16384,
+    "k": 64,
+    "top_features": 16,
+    "n_prompts": 200,
+    "epochs": 500
+  },
+  "coherence_threshold": 0.7,
+  "significance_alpha": 0.05,
+  "paired_test": true,
+  "new_method": {
+    "enabled": true,
+    "mood_sets": [
+      "emotional",
+      "cognitive"
+    ],
+    "mood_scenario": true,
+    "game_specific": true,
+    "game_specific_games": ["trust", "ultimatum_proposer"],
+    "sweep_include_game_specific": true,
+    "layer_fractions": [
+      0.25,
+      0.4,
+      0.5,
+      0.6,
+      0.7,
+      0.8,
+      0.9
+    ],
+    "sweep_mood_variants": ["pos"],
+    "sweep_include_mood_scenario": false,
+    "generosity": true
+  }
+}

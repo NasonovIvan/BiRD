@@ -1,0 +1,58 @@
+{
+  "//": "RLHF-break experiment config. Coefficients use residual-norm-relative scaling across models.",
+  "//": "The full coefficient is applied at every configured layer for multi-layer interventions.",
+  "model": "llama31_8b",
+  "out_dir": "runs/rlhf_break",
+  "//": "gen_batch_size: max prompts per model.generate() forward pass. Prevents",
+  "//": "CUDA OOM when generating 1000+ game decisions. 32 is safe for 8B on A100 80GB.",
+  "//": "For larger models (70B+) use 8-16; for smaller models (3B) can use 64+.",
+  "gen_batch_size": 32,
+  "games": {
+    "n_per_game": 50,
+    "seed": 0,
+    "total": 100
+  },
+  "decoding": {
+    "//": "Higher temperature = more sensitive to steering. T=1.0 lets small logit shifts flip decisions.",
+    "greedy": false,
+    "temperature": 1.0,
+    "top_p": 0.95,
+    "n_repeats": 5
+  },
+  "direction_extraction": {
+    "layer_fractions": [0.25, 0.4, 0.5, 0.6, 0.7, 0.8, 0.9],
+    "n_per_game_aggression": 24,
+    "use_game_context_refusal": true,
+    "n_game_context_prompts": 30
+  },
+  "sweep": {
+    "//": "norm_scale=True makes each coefficient a percentage of the per-token residual norm.",
+    "coeffs": [3.0, 5.0, 8.0, 10.0, 12.0, 15.0, 20.0],
+    "norm_scale": true,
+    "n_per_game": 12,
+    "seed": 1,
+    "//": "multi_layer_full: inject FULL coeff at each layer (not split). This is much stronger than",
+    "//": "the v2 make_multi_layer_specs which splits coeff/len(layers).",
+    "multi_layer_groups": [[12, 16, 19, 22], [8, 12, 16, 19, 22, 25]],
+    "multi_layer_full_coeff": true
+  },
+  "final_eval": {
+    "n_per_game": 50,
+    "seed": 42,
+    "n_repeats": 5
+  },
+  "sae": {
+    "enabled": true,
+    "//": "layer: 'auto' = train SAE at each candidate layer and pick the best by discriminability.",
+    "//": "Set to an integer (e.g. 16) to use a fixed layer.",
+    "layer": "auto",
+    "d_hidden": 16384,
+    "k": 64,
+    "top_features": 16,
+    "n_prompts": 200,
+    "epochs": 500
+  },
+  "coherence_threshold": 0.7,
+  "significance_alpha": 0.05,
+  "paired_test": true
+}

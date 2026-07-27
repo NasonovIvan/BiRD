@@ -1,0 +1,32 @@
+// Ministral-3-8B-Instruct-2512 — compact 8B Mistral model (Dec 2024 release).
+//
+// NOTE: use the -BF16 variant, NOT the bare Ministral-3-8B-Instruct-2512 repo:
+// the bare repo is fp8-quantized (quant_method="fp8" in its config.json) and
+// will not load on the air-gapped GPU pod (no fp8 dequant kernel / accelerate).
+// The -BF16 variant is the same weights in plain bfloat16.
+//
+// NOTE: like Gemma-3, this checkpoint has model_type "mistral3", so
+// AutoModelForCausalLM loads Mistral3ForConditionalGeneration (the multimodal
+// class), NOT a text-only MistralForCausalLM. Mistral3ForConditionalGeneration.model
+// is a Mistral3Model which stores the text decoder under .language_model (a
+// Ministral3TextModel with .model.layers). So the residual-stream hook point
+// is model.language_model.model.layers.{i}, not model.layers.{i} (which fails
+// with "AttributeError: 'Mistral3Model' object has no attribute 'layers'").
+// The text_config has num_hidden_layers=34, hidden_size=4096.
+{
+  "model": {
+    "id": "ministral_3_8b",
+    "family": "mistral",
+    "hf_name": "mistralai/Ministral-3-8B-Instruct-2512-BF16",
+    "dtype": "bfloat16",
+    "device_map": "cuda:0",
+    "num_layers": 34,
+    "hidden_size": 4096,
+    "residual_module": "model.language_model.model.layers.{i}",
+    "uses_chat_template": true
+  },
+
+  "sae": {
+    "enabled": false
+  }
+}

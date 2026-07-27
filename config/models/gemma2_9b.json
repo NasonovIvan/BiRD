@@ -1,0 +1,21 @@
+// Gemma-2-9b — scale axis within the Gemma family.
+{
+  "model": {
+    "id": "gemma2_9b",
+    "family": "gemma2",
+    "hf_name": "google/gemma-2-9b-it",
+    "dtype": "bfloat16",
+    "device_map": "cuda:0",          // ~18 GB, single A100
+    "num_layers": 42,
+    "hidden_size": 3584,
+    "residual_module": "model.layers.{i}",
+    "uses_chat_template": true
+  },
+
+  "sae": {
+    "enabled": true,
+    "provider": "sae_lens",
+    "release": "gemma-scope-9b-pt-res-canonical",
+    "sae_id_template": "layer_{i}/width_16k/canonical"
+  }
+}

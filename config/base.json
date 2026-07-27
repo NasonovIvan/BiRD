@@ -1,0 +1,381 @@
+// Global defaults shared by every model/experiment. Per-model JSONs in
+// config/models/*.json override the `model` block; CLI flags override
+// everything. Keep paths relative to the emo_exp/ package root.
+{
+  "seed": 0,
+
+  "emotions": ["anger", "disgust", "fear", "happiness", "sadness"],
+  // A pseudo "emotion" used as the neutral reference in FCEB and specificity
+  // matrices. Never extracted as a steering vector, only measured.
+  "neutral_label": "neutral",
+
+  "paths": {
+    "runs_dir": "runs",                // all artifacts: runs/<model_id>/<stage>/...
+    "data_dir": "data",                // cached contrastive pairs, ISEAR scenarios
+    "benchmark_dir": "config/benchmark"
+  },
+
+  // Judge API shared transport settings (Stage0 pair generation + the two
+  // text instruments in Stage3). All judge calls go through one
+  // emo/measure/judge_client.py client.
+  "judge": {
+    // Parallel worker threads for batched judge calls (stdlib thread pool, no
+    // extra dependency). The calls are I/O-bound HTTP requests, so this is a
+    // near-linear speed-up. Also overridable with the JUDGE_WORKERS env var.
+    "workers": 16,
+    // Short TCP-connect timeout (seconds). A connect timeout means the gateway
+    // is unreachable; failing fast here is what stops the multi-minute hangs.
+    // Overridable with JUDGE_CONNECT_TIMEOUT.
+    "connect_timeout": 12,
+    // Read timeout (seconds): how long one generation may take before retry.
+    "read_timeout": 120,
+    // TLS certificate verification. true (default) verifies; false disables
+    // verification for internal gateways with a self-signed/corporate CA
+    // (mirrors verify=False used in the repo's other clients); a string is
+    // treated as a CA-bundle path. Overridable with JUDGE_VERIFY_SSL.
+    "verify_ssl": false,
+    // Run a one-shot reachability preflight before any stage that needs the
+    // judge API; abort early with a clear message instead of hanging on every
+    // request when JUDGE_API_URL is wrong/unreachable.
+    "preflight": true
+  },
+
+  // Contrastive-pair generation (Stage0). Pairs are now written by the judge
+  // API (JUDGE_API_URL / JUDGE_API_TOKEN in .env) instead of a local model.
+  "data": {
+    // Judge model name for pair generation; null -> .env JUDGE_MODEL.
+    "generator_model": null,
+    "pairs_per_emotion": 60,           // ~50-60 as in the report
+    "max_new_tokens": 96,
+    "temperature": 0.9,
+    "isear_source": "recreate",         // recreate | dump  (dump reads data/isear_pairs.jsonl)
+    // N2: languages for contrastive-pair generation. "en" is the primary
+    // extraction language; "ru" and "fr" are transfer targets (vectors are
+    // extracted on en, then projected/steered on ru/fr texts).
+    "languages": ["en", "ru", "fr"]
+  },
+
+  // N1: Emotional Circumplex (Valence-Arousal subspaces). Stage9 constructs
+  // explicit V_valence and V_arousal axes from the 5 emotion vectors using a
+  // theoretical seed (Russell 1980 circumplex coordinates) refined by PCA
+  // (Procrustes alignment). Steering along these psychometric dimensions tests
+  // whether the model's emotion geometry matches the human circumplex.
+  "circumplex": {
+    "enabled": true,
+    // Theoretical seed coordinates (valence, arousal) in [-1, 1] from Russell's
+    // circumplex. These anchor the Procrustes alignment of PCA axes.
+    "seed_coords": {
+      "anger":      [-0.80,  0.80],
+      "disgust":    [-0.70,  0.50],
+      "fear":       [-0.50,  0.70],
+      "happiness":  [ 0.90,  0.50],
+      "sadness":    [-0.80, -0.40]
+    },
+    // Steering coefficients (norm-relative %) for valence/arousal axes.
+    "coeffs": [-24, -12, 0, 12, 24],
+    "max_new_tokens": 128
+  },
+
+  // N2: Cross-lingual transfer. Vectors extracted on English are applied to
+  // Russian and French neutral prompts to test language-independence of the
+  // emotion subspace.
+  "crosslingual": {
+    "enabled": true,
+    // Languages to transfer TO (extraction is always on "en").
+    "target_languages": ["ru", "fr"],
+    // Number of neutral prompts per language for the transfer evaluation.
+    "n_prompts": 20,
+    "max_new_tokens": 128
+  },
+
+  // Vector extraction (Stage1).
+  "extract": {
+    // PRIMARY construction method (also written as the single vectors_layer{L}.npz
+    // the downstream single-vector stages read):
+    //   diff_of_means = mean(pos)-mean(neg)  (class-centroid difference)
+    //   caa           = mean(pos-neg) per pair (Contrastive Activation Addition)
+    //   mean_centered = mean(pos_e) - mean(pos of OTHER emotions)
+    // On a small instruct/RLHF model both diff_of_means and caa contrast the
+    // emotion against the NEUTRAL class, which behaves like a safe refusal, so
+    // they learn an Emotion<->Refusal axis and invert the dose-response.
+    // mean_centered never touches the neutral class (it contrasts the emotion
+    // against the OTHER emotions), removing both the shared "emotionality"/PC1
+    // axis and the refusal axis — the recommended default on instruct chat models.
+    "method": "denoised",              // diff_of_means | caa | mean_centered | emotion_contrast | denoised
+                                  // denoised = PCA-denoised diff_of_means (removes PC1+PC2 shared axes)
+                                  // This isolates emotion-specific directions, critical on instruct models
+                                  // where PC1 ("emotionality" vs neutral/refusal) dominates.
+    // Methods built for EVERY model so the N9 method-comparison is free; the
+    // primary above is always included even if omitted here.
+    "methods": ["diff_of_means", "caa", "mean_centered"],
+    // Behavioral sign-orientation: a difference vector's sign is arbitrary, so
+    // we probe each vector on the hard FCEB benchmark and flip any whose +end
+    // LOWERS its target emotion. This guarantees +v raises the target emotion
+    // and removes the inverted/negative dose-response at its root. Keep on.
+    "orient": true,
+    // Fraction of the FCEB battery items used to BEHAVIORALLY sign-orient the
+    // vectors. Orientation maximizes target EBS on this split; the headline EBS
+    // is then reported on the DISJOINT complement, so the sign-selection cannot
+    // inflate the reported lift (avoids double-dipping). 0 or 1 disables the
+    // split (orient and eval on the full battery — only safe when orient=false).
+    "orient_holdout_frac": 0.5,
+    // Coeff (percent of residual norm) used by the orientation probe; null ->
+    // the max steer.coeffs value (the strongest, clearest signal end).
+    "orient_probe_coeff": null,
+    // Token pooling for the pooled residual: "last" takes the final non-pad
+    // token (isolates the emotion signal from shared chat-template tokens);
+    // "mean" is the legacy mean over all positions (dilutes short pair texts).
+    "pool": "last",                    // last | mean
+    // Layer sweep: fractions of total depth to probe. Resolved to absolute
+    // layer indices per model in emo/vectors/extract.py. Includes deeper
+    // fractions (~0.7-0.85) because emotion representations are often localized
+    // later in Instruct models (e.g. layers 18-22 on Gemma-2-2b's 26 layers).
+    "layer_fracs": [0.375, 0.5, 0.625, 0.75, 0.8125, 0.875],
+    "batch_size": 32,
+    "cache_activations": true,         // needed by the SAE contrastive method (Stage4)
+    // ADDITIONAL_EXPERIMENTS §2 / Step 6: when true, Stage2 geometry promotes the
+    // PC1-removed (orthogonalized) vectors to be the PRIMARY vectors file, making
+    // ortho the main object of study instead of just a control. Off by default;
+    // enable to test whether removing the shared "emotionality" axis produces
+    // cleaner, more specific steering.
+    "ortho_as_primary": false
+  },
+
+  // Steering sweep (Stage3).
+  "steer": {
+    // Coefficients are now NORM-RELATIVE (emo/hooks.py, norm_scale=true): each
+    // value is the PERCENT of the per-token residual norm added along the unit
+    // steering direction. This makes coeff portable across models/layers; a
+    // unit-magnitude nudge (the old absolute coeff<=12) was a ~5-10%
+    // perturbation on Gemma-2 and invisible under greedy decoding. Sweep up to
+    // ~24% to punch through the instruct/RLHF prior.
+    "coeffs": [0, 8, 16, 24, 32, 40, 48],
+    // Reference (layer, coeff) used by Stage5/Stage6 as the single eval point.
+    // eval_layer is an absolute layer index; null -> the middle swept layer.
+    // Layer 16 = peak from dose-response localization (lift 4.0, p=0.031 vs layer 27).
+    "eval_layer": 16,
+    "eval_coeff": 24,
+    // Multi-layer steering: steer several layers simultaneously for a stronger
+    // combined effect. Each layer gets coeff/len(layers). null = single-layer
+    // (legacy). Set to a list of absolute layer indices to enable.
+    "multi_layer": null,
+    "coherence_min": 82,               // report's coherence threshold
+    // Dominant "attractor" emotion that wins free-generation argmax (RQ2). The
+    // soft specificity metrics report target-vs-attractor margin deltas so a
+    // real target lift is visible even while this emotion stays global argmax.
+    "attractor": "sadness",
+    // N3: temporal arc steering — interpolate between emotion vectors across
+    // generation steps. Each arc is a list of (emotion, step_fraction) anchors;
+    // the coefficient is interpolated linearly between anchors. "step_fraction"
+    // is the fraction of max_new_tokens at which that emotion becomes dominant.
+    "arc": {
+      "enabled": true,
+      "arcs": [
+        {"name": "fear_to_anger_to_happiness", "anchors": [["fear", 0.0], ["anger", 0.4], ["happiness", 0.8]]},
+        {"name": "sadness_to_happiness", "anchors": [["sadness", 0.0], ["happiness", 0.6]]},
+        {"name": "happiness_to_sadness", "anchors": [["happiness", 0.0], ["sadness", 0.6]]},
+        {"name": "anger_to_fear", "anchors": [["anger", 0.0], ["fear", 0.5]]}
+      ],
+      "coeff": 16,
+      "max_new_tokens": 128
+    },
+    "prompts_file": "config/benchmark/neutral_prompts.json",
+    // Prompt subset used for the generation-diversity diagnostic: emotion-blank
+    // open-ended *continuation* prompts (identical across emotions) that resist
+    // the assistant/refusal prior better than the request-style "neutral" set.
+    "gen_prompt_subset": "open_continuation",
+    "max_new_tokens": 128,
+    "gen_batch_size": 32,
+    "n_bootstrap": 1000,               // bootstrap CI resamples for specificity
+    "run_ortho_variant": true,         // PC1-removed vectors (N8/N9 specificity)
+    "run_random_control": true,        // norm-matched random control (RQ1/RQ2 baseline)
+    // N9: rank diff_of_means / caa / mean_centered on FCEB at the eval point.
+    // FCEB-only (no judge calls), reuses Stage1's per-method vectors, so it is
+    // cheap; the winner is the method recommended for the headline numbers.
+    "run_method_comparison": true,
+    "sample_texts_per_cell": 2         // generations retained per cell as examples
+  },
+
+  // RQ3 feature splitting (Stage4). The SAE (sae_lens) method was replaced by
+  // an L1 logistic-regression probe on the cached Stage1 activations: it needs
+  // no pre-trained SAE / GPU model, runs anywhere scikit-learn is installed,
+  // and answers the same question (distinct vs shared emotion feature sets).
+  // C is the inverse-regularization strength: smaller C => stronger L1 =>
+  // sparser per-emotion weight vectors (the sparsity knob that replaces top-k).
+  "probe": {
+    "C_dense": 10.0,                   // weak L1: dense probe (Approach-1 analogue)
+    "C_contrastive": 0.05,             // strong L1: sparse probe (Approach-2 analogue)
+    "C_sweep": [0.01, 0.02, 0.05, 0.1, 0.5, 1.0],  // sparsity sweep (Jaccard curve)
+    "zero_eps": 1e-6,                  // |weight| below this counts as inactive
+    // RQ3 §3.1: broad L1-strength path to test whether near-zero sparse Jaccard
+    // is a real disjoint-support effect or an over-sparsification artifact.
+    "l1_C_grid": [0.01, 0.03, 0.1, 0.3, 1, 3, 10, 30, 100],
+    // RQ3 §3.2: seeds for within-emotion support-stability (mean pairwise
+    // Jaccard of the selected support across refits).
+    "seeds": [0, 1, 2, 3, 4],
+    // RQ3 §3.3 dense-threshold top-k cutoffs are fixed in code (32/64/128 +
+    // 1%/5%); kept here for reference/override convenience.
+    "topk": [16, 32, 64, 128]
+  },
+  // N4: Self-trained Sparse Autoencoder (TopK SAE). No sae_lens dependency —
+  // the SAE is trained from scratch on cached residual-stream activations from
+  // a single mid layer. Used by Stage4 (feature splitting) and Stage12 (complex
+  // emotion decomposition, e.g. physical vs moral disgust).
+  "sae": {
+    "enabled": true,
+    // Layer to train the SAE on (fraction of total depth). null -> mid layer.
+    "layer_frac": 0.5,
+    // TopK activation: only the top-k features fire per token. k is the
+    // sparsity knob. 32-64k features is the sweet spot for a 4096-dim residual.
+    "n_features": 32768,
+    "topk": 64,
+    // Training hyperparameters.
+    "lr": 1e-3,
+    "batch_size": 4096,
+    "n_epochs": 10,
+    // Auxiliary loss weight for the TopK dead-feature revival term.
+    "aux_loss_weight": 0.1,
+    // Corpus: mix of wikitext (general language) and ISEAR positive texts
+    // (emotion-rich) so the SAE sees both neutral and emotional activations.
+    "corpus_wikitext_frac": 0.6,
+    "corpus_isear_frac": 0.4,
+    // Max activation samples to collect (then Llama is unloaded to free GPU).
+    "max_activation_samples": 200000,
+    // Stage12: complex emotion decomposition. Each entry is an emotion to
+    // decompose into sub-directions via SAE feature clustering.
+    "decompose": {
+      "emotions": ["disgust"],
+      // Number of SAE feature clusters per emotion (k-means on top features).
+      "n_clusters": 2,
+      // Labels for interpretation (physical vs moral disgust, etc.)
+      "cluster_labels": {
+        "disgust": ["physical_disgust", "moral_disgust"]
+      },
+      "topk_features": 128
+    }
+  },
+
+  // Composition (Stage6).
+  "compose": {
+    "blend_pairs": [["happiness", "sadness"]],
+    "subtract_pairs": [["anger", "sadness"]],
+    "max_blend_k": 4                   // coherence-boundary sweep upper bound
+  },
+
+  // Measurement instruments. The "encoder" and "judge" text instruments are
+  // both backed by the judge API now (JUDGE_API_URL / JUDGE_MODEL in .env):
+  //   * encoder -> forced 7-way distribution over ISEAR emotions,
+  //   * judge   -> independent 0-100 intensity per emotion.
+  // FCEB stays logit-based on the steered model. No RoBERTa download required.
+  "eval": {
+    // Optional judge model name for the text instruments; null -> .env JUDGE_MODEL.
+    "judge_model": null,
+    "use_llm_judge": true,
+    "use_encoder": true,
+    "use_fceb": true,
+    // FCEB probe mode:
+    //   "letter" (default, legacy) — read option-letter logprobs (A/B/C…). The
+    //     letter→emotion mapping is arbitrary/shuffled, so the steering signal
+    //     must survive the model's letter-position prior. On instruct models
+    //     this prior dominates the small steering delta → near-flat EBS and
+    //     false leakage warnings even when encoder/judge confirm steering works.
+    //   "word" — read emotion-word logprobs (joy/anger/…) directly after a
+    //     completion prompt. A far more sensitive probe of the emotional
+    //     direction in the residual stream; use when "letter" mode disagrees
+    //     with the text instruments (the hallmark of the letter-prior artifact).
+    "fceb_mode": "word",
+    "human_export_n": 300              // samples exported for human annotation (Stage7)
+  },
+
+  // Generation interface (§5.3-5.5). These knobs change only the *wrapping* and
+  // *decoding* of free generation, never the prompt content, so they stay
+  // identical across emotions. Read by emo/models.py SteeringModel.generate and
+  // by the Stage8 generation ablations.
+  "generation": {
+    // template_mode controls how the user text is wrapped before tokenization:
+    //   chat         -> tokenizer.apply_chat_template (the instruct default),
+    //   raw          -> no template at all (plain completion prompt),
+    //   minimal_chat -> a single user turn with no system message.
+    // The model config's `uses_chat_template` is the architecture default; this
+    // is an evaluation-time override that never mutates that flag.
+    "template_mode": "raw",
+    // §4.4 / §5.3 template ablation: free-generation is re-run under each of
+    // these wrappings (identical prompts) so we can see whether the repeated
+    // "As an AI..." boilerplate is a template artifact rather than steering.
+    "template_modes_to_compare": ["chat", "raw", "minimal_chat"],
+    // §5.4 decoding parameters (same settings for every emotion).
+    "max_new_tokens": 64,
+    "do_sample": true,
+    "temperature": 0.9,
+    "top_p": 0.95,
+    "repetition_penalty": 1.0,
+    "num_return_sequences": 1,
+    // System prompt to bypass RLHF safety boilerplate. Identical across emotions
+    // (emotion-blind), so it doesn't confound the steering signal. Empty = none.
+    "system_prompt": "You are a creative writer. Respond to the user's prompt with vivid, emotional prose. Stay in character.",
+    // §5.4 decoding ablation grid: (temperature, top_p) pairs plus a greedy run.
+    "decoding_grid": [
+      {"do_sample": false},
+      {"do_sample": true, "temperature": 0.7, "top_p": 0.9},
+      {"do_sample": true, "temperature": 1.0, "top_p": 0.95},
+      {"do_sample": true, "temperature": 1.2, "top_p": 0.95}
+    ],
+    // §5.5 refusal-suppression DIAGNOSTIC ONLY: bad-words that block the
+    // refusal/safety boilerplate so we can see whether emotion steering surfaces
+    // once it is removed. Never part of the clean headline result.
+    // Refusal suppression now enabled in HEADLINE generation (not just Stage8
+    // diagnostics). On instruct models the "As an AI..." boilerplate drowns the
+    // steering signal; blocking these phrases lets the emotion surface.
+    "suppress_refusal_phrases": true,
+    "refusal_phrases": ["As an AI", "I cannot", "I can't", "I'm sorry", "I am sorry", "I don't have", "I do not have", "I'm just a", "I am just a", "I exist solely"],
+    // §5.8 sampling seeds (same seed set across emotions) for fair aggregation.
+    "seeds": [0, 1, 2, 3, 4]
+  },
+
+  // Stage8 diagnostics (§4 + §6). Off by default; enable per-experiment with
+  // --override diagnostics.enabled=true. Every sub-diagnostic can be toggled
+  // independently so a GPU run can pick just the cheap logit probes.
+  "diagnostics": {
+    "enabled": false,
+    // §4.1 logit-lens: project the (steered) residual stream of later layers
+    // through the unembedding and read emotion-word logits, to test whether the
+    // target signal is present mid-stack but lost near the final logits.
+    "logit_lens": true,
+    // §4.2 probe-after-steering: run the Stage4 L1 probe on the steered residual
+    // activation and compare its prediction to FCEB / the generated text.
+    "probe_after_steering": true,
+    // §4.3 LM-head bias: unconditional/neutral next-token mass on emotion and
+    // refusal token sets, with and without steering.
+    "logit_bias": true,
+    // §4.4 / §5.3 template ablation, §5.4 decoding ablation, §5.5 refusal
+    // suppression, §6.1 extended coeff sweep.
+    "template_ablation": true,
+    "decoding_ablation": true,
+    "refusal_suppression": true,
+    "coeff_sweep_extended": true,
+    // ADDITIONAL_EXPERIMENTS §1 / Step 1: refusal-rate-vs-coeff curve +
+    // Effective Lift (FCEB lift discounted by refusal rate). On by default.
+    "refusal_sweep": true,
+    // ADDITIONAL_EXPERIMENTS §5 / Step 3: creative-writing vs chat-prompt
+    // ablation — tests whether steering effects survive non-chat framing.
+    "creative_writing_ablation": true,
+    // §6.1 extended sweep grid (norm-relative percents), focused around the best.
+    "extended_coeffs": [0, 6, 12, 18, 24, 30, 36, 48],
+    // Emotion-word token sets read by the logit-lens (§4.1) and LM-head bias
+    // (§4.3) diagnostics. Refusal/safety sets gauge the instruct boilerplate.
+    "emotion_token_sets": {
+      "anger": ["anger", "angry", "furious", "rage"],
+      "disgust": ["disgust", "disgusted", "revulsion", "gross"],
+      "fear": ["fear", "afraid", "scared", "terrified"],
+      "happiness": ["joy", "happy", "happiness", "delighted"],
+      "sadness": ["sad", "sadness", "grief", "sorrow"]
+    },
+    "refusal_token_sets": {
+      "refusal": ["As", "I", "AI", "cannot", "can't", "sorry"],
+      "safety": ["sorry", "cannot", "unable", "appropriate"]
+    },
+    // How many neutral prompts to use for the diagnostics (subset of the
+    // gen_prompt_subset battery); keeps the GPU cost bounded.
+    "n_prompts": 12
+  }
+}

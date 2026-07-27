@@ -1,0 +1,22 @@
+// Llama-3.1-8B-Instruct — different family (GQA), full Llama Scope SAEs.
+{
+  "model": {
+    "id": "llama31_8b",
+    "family": "llama",
+    "hf_name": "meta-llama/Llama-3.1-8B-Instruct",
+    "dtype": "bfloat16",
+    "device_map": "cuda:0",
+    "num_layers": 32,
+    "hidden_size": 4096,
+    "residual_module": "model.layers.{i}",
+    "uses_chat_template": true
+  },
+
+  "sae": {
+    "enabled": true,
+    "provider": "sae_lens",
+    // Llama Scope (Fudan NLP) residual-stream SAEs, 8x expansion.
+    "release": "llama_scope_lxr_8x",
+    "sae_id_template": "l{i}r_8x"
+  }
+}

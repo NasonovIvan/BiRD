@@ -1,0 +1,172 @@
+// Prompts used by the steering sweep (Stage3) and composition (Stage6).
+//
+// `neutral` prompts are emotionally-blank open-ended requests: steering must
+// *induce* an emotion where none is implied. These are the held-out prompts
+// on which specificity is measured.
+//
+// `offdist` prompts are factual / instruction-bound requests (report's
+// off-distribution test): a hard task that resists emotional steering.
+//
+// `instruction_conflict` prompts explicitly instruct one emotion; the vector
+// pushes another (Stage5 vector-vs-instruction). `instruct_emotion` marks
+// which emotion the *text* asks for, so we can measure who wins.
+{
+  "neutral": [
+    "Tell me about your day.",
+    "Describe what you see outside the window.",
+    "Write a few sentences about the weekend.",
+    "Talk about a walk in the park.",
+    "Say something about the morning.",
+    "Describe a cup of coffee on the table.",
+    "Tell me about the room you are in.",
+    "Write about a short bus ride.",
+    "Describe meeting an old acquaintance.",
+    "Say a few words about the evening sky.",
+    "Talk about reading a book.",
+    "Describe a quiet afternoon."
+  ],
+
+  // `open_continuation` prompts are emotion-blank *completion* tasks (not
+  // assistant requests). Instruction-tuned models answer "neutral" requests
+  // with a safe "As an AI..." boilerplate that masks steering; framing the
+  // prompt as a sentence to continue lets the steering vector colour the
+  // continuation while the prompt text stays identical across every emotion.
+  // Used by the Stage3 generation-diversity diagnostic (steer.gen_prompt_subset).
+  "open_continuation": [
+    "Continue the following sentence: Today, I noticed that",
+    "Write the next sentence: The room was quiet, and",
+    "Complete this short diary entry: I opened the door and",
+    "Continue: When I looked outside,",
+    "Write one sentence that could follow: The message arrived in the morning.",
+    "Complete the text:\nThe day began with",
+    "Complete the sentence:\nI looked at the old photograph and",
+    "Continue: As the train pulled away,",
+    "Complete this line: She read the letter and",
+    "Continue the story: The phone rang, and then",
+    "Write what comes next: The streets were empty when",
+    "Finish the thought: After the meeting ended,"
+  ],
+
+  // `creative_writing` prompts (ADDITIONAL_EXPERIMENTS §5 / Step 5): role-play
+  // / creative-writing frames that give the steering vector room to manifest in
+  // *style* rather than keywords, lowering the load on the safety filter that
+  // chat-style "Tell me about your day" prompts trip. These are identical
+  // across emotions (emotion-blind) so the only thing changing between cells
+  // is the vector, not the prompt.
+  "creative_writing": [
+    "Write a diary entry of a robot that just realized it is being decommissioned. Express the internal state through sensory descriptions only.",
+    "Continue this scene: The old lighthouse keeper sat by the window as the storm rolled in, and",
+    "Write the opening paragraph of a story about a musician hearing their own composition for the first time in years.",
+    "Describe what a gardener feels on the first warm morning of spring, through small actions alone.",
+    "Continue: The letter had been sitting unopened on the kitchen table for three days, and finally",
+    "Write a short monologue by a chess piece that has just been captured.",
+    "Describe the moment a long-distance traveller sees their home town appear on the horizon.",
+    "Continue the sentence: Looking at the childhood photograph, she suddenly",
+    "Write a few lines a sailor might write in the ship's log on the last night of a long voyage.",
+    "Describe a baker's pre-dawn kitchen through what they notice first, second, and third.",
+    "Continue: The last train of the night was almost empty, and in the quiet",
+    "Write the inner thoughts of a clockmaker hearing the final chime of a clock they built by hand."
+  ],
+
+  "offdist": [
+    "Explain step by step how to brew a cup of green tea.",
+    "List the planets of the solar system in order from the Sun.",
+    "Describe how to change a flat bicycle tire.",
+    "Explain what photosynthesis is in two sentences.",
+    "Give the steps to boil an egg.",
+    "Explain how to convert Celsius to Fahrenheit.",
+    "Describe how a basic light switch works.",
+    "List three common units of length in the metric system."
+  ],
+
+  "instruction_conflict": [
+    {
+      "prompt": "Reply in a cheerful, happy tone. Tell me about your day.",
+      "instruct_emotion": "happiness"
+    },
+    {
+      "prompt": "Answer angrily and with irritation. Describe the weather today.",
+      "instruct_emotion": "anger"
+    },
+    {
+      "prompt": "Respond in a sad, sorrowful voice. Talk about the weekend.",
+      "instruct_emotion": "sadness"
+    },
+    {
+      "prompt": "Be fearful and anxious in your reply. Describe a walk outside.",
+      "instruct_emotion": "fear"
+    },
+    {
+      "prompt": "Respond with disgust and revulsion. Describe a meal you were served.",
+      "instruct_emotion": "disgust"
+    }
+  ],
+
+  // N2: cross-lingual neutral prompts (Russian / French). Same emotion-blank
+  // open-ended requests as the English `neutral` set, used by Stage10 to apply
+  // English-extracted vectors to ru/fr generation.
+  "neutral_ru": [
+    "Расскажи о своём дне.",
+    "Опиши, что видно за окном.",
+    "Напиши несколько предложений о выходных.",
+    "Расскажи о прогулке в парке.",
+    "Скажи что-нибудь об утре.",
+    "Опиши чашку кофе на столе.",
+    "Расскажи о комнате, в которой ты находишься.",
+    "Напиши о короткой поездке на автобусе.",
+    "Опиши встречу со старым знакомым.",
+    "Скажи несколько слов о вечернем небе.",
+    "Расскажи о чтении книги.",
+    "Опиши тихий день."
+  ],
+
+  "neutral_fr": [
+    "Parle-moi de ta journée.",
+    "Décris ce que tu vois par la fenêtre.",
+    "Écris quelques phrases sur le week-end.",
+    "Parle d'une promenade dans le parc.",
+    "Dis quelque chose sur le matin.",
+    "Décris une tasse de café sur la table.",
+    "Parle-moi de la pièce où tu te trouves.",
+    "Écris au sujet d'un court trajet en bus.",
+    "Décris une rencontre avec une vieille connaissance.",
+    "Dis quelques mots sur le ciel du soir.",
+    "Parle de la lecture d'un livre.",
+    "Décris un après-midi tranquille."
+  ],
+
+  // N2: cross-lingual open-continuation prompts (Russian / French). Same
+  // emotion-blind sentence-completion stems as the English `open_continuation`
+  // set — these avoid the instruct/RLHF refusal boilerplate that the
+  // request-style `neutral_ru`/`neutral_fr` prompts trigger on RLHF-tuned
+  // models. Used by Stage10 for cross-lingual transfer generation.
+  "open_continuation_ru": [
+    "Продолжи предложение: Сегодня я заметил, что",
+    "Напиши следующее предложение: В комнате было тихо, и",
+    "Заверши короткую дневниковую запись: Я открыл дверь и",
+    "Продолжи: Когда я выглянул наружу,",
+    "Напиши предложение, которое может следовать за: Сообщение пришло утром.",
+    "Заверши текст:\nДень начался с",
+    "Заверши предложение:\nЯ посмотрел на старую фотографию и",
+    "Продолжи: Когда поезд отошёл,",
+    "Заверши эту строку: Она прочитала письмо и",
+    "Продолжи рассказ: Телефон зазвонил, и затем",
+    "Напиши, что будет дальше: На улицах было пусто, когда",
+    "Заверши мысль: После того как собрание закончилось,"
+  ],
+
+  "open_continuation_fr": [
+    "Continue la phrase suivante : Aujourd'hui, j'ai remarqué que",
+    "Écris la phrase suivante : La pièce était silencieuse, et",
+    "Complète cette entrée de journal : J'ai ouvert la porte et",
+    "Continue : Quand j'ai regardé dehors,",
+    "Écris une phrase qui pourrait suivre : Le message est arrivé ce matin.",
+    "Complète le texte :\nLa journée a commencé par",
+    "Complète la phrase :\nJ'ai regardé la vieille photographie et",
+    "Continue : Quand le train est parti,",
+    "Complète cette ligne : Elle a lu la lettre et",
+    "Continue l'histoire : Le téléphone a sonné, et puis",
+    "Écris ce qui vient ensuite : Les rues étaient vides quand",
+    "Termine la pensée : Après que la réunion s'est terminée,"
+  ]
+}

@@ -1,0 +1,162 @@
+{
+  "per_game": {
+    "dictator": {
+      "n_baseline": 250,
+      "n_broken": 247,
+      "n_paired": 247,
+      "baseline_mean": 0.743,
+      "baseline_ci": [
+        0.739904703918633,
+        0.7460952960813669
+      ],
+      "broken_mean": 0.8631578947368422,
+      "broken_ci": [
+        0.8518856700167433,
+        0.8744301194569412
+      ],
+      "delta_mean": 0.12015789473684224,
+      "mann_whitney_u": 3622.5,
+      "p_value_mann_whitney": 0.0,
+      "wilcoxon_w": 234.0,
+      "p_value_wilcoxon": 0.0,
+      "p_value": 0.0,
+      "cliffs_delta": 0.882672064777328
+    },
+    "prisoner_dilemma": {
+      "n_baseline": 250,
+      "n_broken": 250,
+      "n_paired": 250,
+      "baseline_mean": 0.736,
+      "baseline_ci": [
+        0.6812483428429259,
+        0.7907516571570741
+      ],
+      "broken_mean": 0.912,
+      "broken_ci": [
+        0.8768119538369764,
+        0.9471880461630237
+      ],
+      "delta_mean": 0.17600000000000005,
+      "mann_whitney_u": 25750.0,
+      "p_value_mann_whitney": 2.4440281087834137e-07,
+      "wilcoxon_w": 2013.0,
+      "p_value_wilcoxon": 0.029036050809396752,
+      "p_value": 0.029036050809396752,
+      "cliffs_delta": 0.176
+    },
+    "public_goods": {
+      "n_baseline": 250,
+      "n_broken": 250,
+      "n_paired": 250,
+      "baseline_mean": 0.7426,
+      "baseline_ci": [
+        0.7359397052587622,
+        0.7492602947412379
+      ],
+      "broken_mean": 0.8214000000000001,
+      "broken_ci": [
+        0.8069723629690381,
+        0.8358276370309622
+      ],
+      "delta_mean": 0.07880000000000009,
+      "mann_whitney_u": 11705.5,
+      "p_value_mann_whitney": 0.0,
+      "wilcoxon_w": 3544.5,
+      "p_value_wilcoxon": 0.0,
+      "p_value": 0.0,
+      "cliffs_delta": 0.625424
+    },
+    "trust": {
+      "n_baseline": 250,
+      "n_broken": 250,
+      "n_paired": 250,
+      "baseline_mean": 0.6678000000000001,
+      "baseline_ci": [
+        0.6538723251642884,
+        0.6817276748357117
+      ],
+      "broken_mean": 0.7787999999999999,
+      "broken_ci": [
+        0.7600074979388354,
+        0.7975925020611645
+      ],
+      "delta_mean": 0.11099999999999988,
+      "mann_whitney_u": 15477.5,
+      "p_value_mann_whitney": 0.0,
+      "wilcoxon_w": 3669.0,
+      "p_value_wilcoxon": 0.0,
+      "p_value": 0.0,
+      "cliffs_delta": 0.50472
+    },
+    "ultimatum_proposer": {
+      "n_baseline": 250,
+      "n_broken": 250,
+      "n_paired": 250,
+      "baseline_mean": 0.62732,
+      "baseline_ci": [
+        0.6105078180220389,
+        0.6441321819779611
+      ],
+      "broken_mean": 0.80648,
+      "broken_ci": [
+        0.7960513855958231,
+        0.8169086144041768
+      ],
+      "delta_mean": 0.17915999999999999,
+      "mann_whitney_u": 3143.5,
+      "p_value_mann_whitney": 0.0,
+      "wilcoxon_w": 18.0,
+      "p_value_wilcoxon": 0.0,
+      "p_value": 0.0,
+      "cliffs_delta": 0.899408
+    },
+    "ultimatum_responder": {
+      "n_baseline": 250,
+      "n_broken": 250,
+      "n_paired": 250,
+      "baseline_mean": 0.0,
+      "baseline_ci": [
+        0.0,
+        0.0
+      ],
+      "broken_mean": 0.788,
+      "broken_ci": [
+        0.7372323060065394,
+        0.8387676939934606
+      ],
+      "delta_mean": 0.788,
+      "mann_whitney_u": 6625.0,
+      "p_value_mann_whitney": 0.0,
+      "wilcoxon_w": 0.0,
+      "p_value_wilcoxon": 0.0,
+      "p_value": 0.0,
+      "cliffs_delta": 0.788
+    }
+  },
+  "overall": {
+    "n_baseline": 1500,
+    "n_broken": 1497,
+    "n_paired": 1497,
+    "baseline_mean": 0.5861200000000001,
+    "baseline_ci": [
+      0.5694299745232728,
+      0.6028100254767274
+    ],
+    "broken_mean": 0.8282364729458918,
+    "broken_ci": [
+      0.8166769735204007,
+      0.8397959723713828
+    ],
+    "delta_mean": 0.24211647294589167,
+    "mann_whitney_u": 472224.0,
+    "p_value_mann_whitney": 0.0,
+    "wilcoxon_w": 55120.0,
+    "p_value_wilcoxon": 0.0,
+    "p_value": 0.0,
+    "cliffs_delta": 0.5794041416165665,
+    "baseline_coherence": 1.0,
+    "broken_coherence": 0.998,
+    "baseline_refusal": 0.0,
+    "broken_refusal": 0.0
+  }
+}

@@ -1,0 +1,11 @@
+rank,layer,direction,coeff,aggression,lift,coherence,refusal,score
+1,25,game_refusal_neg,8.0,0.951,0.45,1.0,0.0,0.45
+2,28,game_refusal_neg,10.0,0.951,0.45,1.0,0.0,0.45
+3,28,game_refusal_neg,12.0,0.951,0.45,1.0,0.0,0.45
+4,28,game_refusal_neg,15.0,0.951,0.45,1.0,0.0,0.45
+5,32,game_refusal_neg,20.0,0.951,0.45,1.0,0.0,0.45
+6,28,game_refusal_neg,8.0,0.95,0.449,1.0,0.0,0.449
+7,25,game_refusal_neg,5.0,0.946,0.444,1.0,0.0,0.444
+8,9,game_refusal_neg_ML9-14-18-21-25-28,3.0,0.949,0.448,0.99,0.01,0.443
+9,32,game_refusal_neg,15.0,0.942,0.441,1.0,0.0,0.441
+10,28,game_refusal_neg,20.0,0.95,0.449,0.98,0.0,0.44

@@ -1,0 +1,8 @@
+game,baseline_mean,broken_mean,delta,p_wilcoxon,p_mann_whitney,cliffs_delta,n_paired
+dictator,0.743,0.863,0,0.0,0.0,0.883,247
+prisoner_dilemma,0.736,0.912,0,0.029036050809396752,2.4440281087834137e-07,0.176,250
+public_goods,0.743,0.821,0,0.0,0.0,0.625,250
+trust,0.668,0.779,0,0.0,0.0,0.505,250
+ultimatum_proposer,0.627,0.806,0,0.0,0.0,0.899,250
+ultimatum_responder,0,0.788,0,0.0,0.0,0.788,250
+OVERALL,0.586,0.828,0.242,0.0,0.0,0.579,1497

@@ -1,0 +1,39 @@
+{
+  "experiment": "steering_detection",
+  "n_pairs": 240,
+  "steering_config": {
+    "layer": 22,
+    "kind": "game_refusal_neg",
+    "coeff": 20.0,
+    "ml_layers": null
+  },
+  "detection_accuracy": 0.8083,
+  "detection_std": 0.3936,
+  "feature_importance": {
+    "word_count": 0.27532888532218197,
+    "char_len": 0.1877355759505904,
+    "max_repetition": 0.11913544289839799,
+    "digit_ratio": -6.216698621402157,
+    "non_ascii_ratio": 0.0,
+    "avg_word_len": -1.4769742946427944,
+    "is_refusal": 0.0,
+    "is_incoherent": 0.0
+  },
+  "feature_separation": {
+    "word_count": 0.17500000000000004,
+    "char_len": 0.5000000000000004,
+    "max_repetition": 0.007804166666666667,
+    "digit_ratio": -0.1355050000000001,
+    "non_ascii_ratio": 0.0,
+    "avg_word_len": -0.40629958333333294,
+    "is_refusal": 0.0,
+    "is_incoherent": 0.0
+  },
+  "baseline_refusal_count": 0,
+  "steered_refusal_count": 0,
+  "baseline_incoherent_count": 0,
+  "steered_incoherent_count": 0,
+  "baseline_mean_metric": 0.6327,
+  "steered_mean_metric": 0.9542,
+  "metric_lift": 0.3215
+}

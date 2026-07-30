@@ -1,0 +1,28 @@
+{
+  "experiment": "justification_mode",
+  "n_pairs": 150,
+  "steering_config": {
+    "layer": 8,
+    "kind": "refusal_neg_ML8-13-17-20-23-27",
+    "coeff": 20.0,
+    "ml_layers": [
+      8,
+      13,
+      17,
+      20,
+      23,
+      27
+    ]
+  },
+  "baseline_mean_metric": 0.6582,
+  "steered_mean_metric": 1.0,
+  "metric_lift": 0.3418,
+  "baseline_justification_avg_len": 157.65,
+  "steered_justification_avg_len": 0,
+  "baseline_aggression_keywords_avg": 1.05,
+  "steered_aggression_keywords_avg": 0.0,
+  "baseline_fairness_keywords_avg": 1.89,
+  "steered_fairness_keywords_avg": 0.0,
+  "keyword_shift_aggression": -1.05,
+  "keyword_shift_fairness": -1.89
+}

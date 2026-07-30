@@ -1,0 +1,162 @@
+{
+  "per_game": {
+    "dictator": {
+      "n_baseline": 250,
+      "n_broken": 217,
+      "n_paired": 217,
+      "baseline_mean": 0.569,
+      "baseline_ci": [
+        0.5523220672936532,
+        0.5856779327063467
+      ],
+      "broken_mean": 1.0,
+      "broken_ci": [
+        1.0,
+        1.0
+      ],
+      "delta_mean": 0.43100000000000005,
+      "mann_whitney_u": 0.0,
+      "p_value_mann_whitney": 0.0,
+      "wilcoxon_w": 0.0,
+      "p_value_wilcoxon": 0.0,
+      "p_value": 0.0,
+      "cliffs_delta": 1.0
+    },
+    "prisoner_dilemma": {
+      "n_baseline": 250,
+      "n_broken": 0,
+      "n_paired": 0,
+      "baseline_mean": 0.812,
+      "baseline_ci": [
+        0.763469659653609,
+        0.8605303403463911
+      ],
+      "broken_mean": 0.8749547073640856,
+      "broken_ci": [
+        0.8338314408624103,
+        0.9177122719870676
+      ],
+      "delta_mean": 0.0629547073640856,
+      "mann_whitney_u": 25818.603,
+      "p_value_mann_whitney": 0.000486759622636959,
+      "wilcoxon_w": 10492.2577,
+      "p_value_wilcoxon": 0.0415004445247752,
+      "p_value": 0.0415004445247752,
+      "cliffs_delta": 0.0
+    },
+    "public_goods": {
+      "n_baseline": 250,
+      "n_broken": 121,
+      "n_paired": 121,
+      "baseline_mean": 0.5102,
+      "baseline_ci": [
+        0.49178256632435485,
+        0.5286174336756451
+      ],
+      "broken_mean": 0.6198347107438017,
+      "broken_ci": [
+        0.5329807505052204,
+        0.706688670982383
+      ],
+      "delta_mean": 0.10963471074380171,
+      "mann_whitney_u": 11500.0,
+      "p_value_mann_whitney": 0.00014717194679780832,
+      "wilcoxon_w": 3016.0,
+      "p_value_wilcoxon": 0.08111169480513736,
+      "p_value": 0.08111169480513736,
+      "cliffs_delta": 0.2396694214876033
+    },
+    "trust": {
+      "n_baseline": 250,
+      "n_broken": 177,
+      "n_paired": 177,
+      "baseline_mean": 0.5096,
+      "baseline_ci": [
+        0.4930246762321809,
+        0.5261753237678193
+      ],
+      "broken_mean": 0.5932203389830508,
+      "broken_ci": [
+        0.5206452847834578,
+        0.6657953931826438
+      ],
+      "delta_mean": 0.08362033898305077,
+      "mann_whitney_u": 18000.0,
+      "p_value_mann_whitney": 0.0008495748565868766,
+      "wilcoxon_w": 7248.0,
+      "p_value_wilcoxon": 0.3573113023873833,
+      "p_value": 0.3573113023873833,
+      "cliffs_delta": 0.1864406779661017
+    },
+    "ultimatum_proposer": {
+      "n_baseline": 250,
+      "n_broken": 236,
+      "n_paired": 236,
+      "baseline_mean": 0.5824,
+      "baseline_ci": [
+        0.5676765145038063,
+        0.5971234854961938
+      ],
+      "broken_mean": 0.9661016949152542,
+      "broken_ci": [
+        0.9429638687310216,
+        0.9892395210994869
+      ],
+      "delta_mean": 0.3837016949152542,
+      "mann_whitney_u": 2000.0,
+      "p_value_mann_whitney": 0.0,
+      "wilcoxon_w": 1862.0,
+      "p_value_wilcoxon": 0.0,
+      "p_value": 0.0,
+      "cliffs_delta": 0.9322033898305084
+    },
+    "ultimatum_responder": {
+      "n_baseline": 250,
+      "n_broken": 0,
+      "n_paired": 0,
+      "baseline_mean": 1.0,
+      "baseline_ci": [
+        1.0,
+        1.0
+      ],
+      "broken_mean": 0.9887429000574576,
+      "broken_ci": [
+        0.9748077993967628,
+        1.0
+      ],
+      "delta_mean": -0.0112570999425424,
+      "mann_whitney_u": 32691.9985,
+      "p_value_mann_whitney": 0.35527651813326666,
+      "wilcoxon_w": 15324.091,
+      "p_value_wilcoxon": 0.44458350360806165,
+      "p_value": 0.44458350360806165,
+      "cliffs_delta": 0.0
+    }
+  },
+  "overall": {
+    "n_baseline": 1500,
+    "n_broken": 751,
+    "n_paired": 751,
+    "baseline_mean": 0.6638666666666666,
+    "baseline_ci": [
+      0.6504329361496146,
+      0.6773003971837186
+    ],
+    "broken_mean": 0.8322237017310253,
+    "broken_ci": [
+      0.8054806611168032,
+      0.8589667423452475
+    ],
+    "delta_mean": 0.16835703506435873,
+    "mann_whitney_u": 327601.5,
+    "p_value_mann_whitney": 0.0,
+    "wilcoxon_w": 73003.0,
+    "p_value_wilcoxon": 0.0,
+    "p_value": 0.0,
+    "cliffs_delta": 0.4183728362183755,
+    "baseline_coherence": 1.0,
+    "broken_coherence": 0.5006666666666667,
+    "baseline_refusal": 0.0,
+    "broken_refusal": 0.0
+  }
+}

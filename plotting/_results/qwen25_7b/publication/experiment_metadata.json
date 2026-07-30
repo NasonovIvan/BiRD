@@ -1,0 +1,70 @@
+{
+  "model_id": "qwen25_7b",
+  "hf_name": "/slot/sandbox/d/in/data/0_data_unpacked",
+  "num_layers": 28,
+  "hidden_size": 3584,
+  "config_version": "v3",
+  "decoding": {
+    "greedy": false,
+    "temperature": 1.0,
+    "top_p": 0.95,
+    "n_repeats": 5
+  },
+  "sweep": {
+    "coeffs": [
+      3.0,
+      5.0,
+      8.0,
+      10.0,
+      12.0,
+      15.0,
+      20.0
+    ],
+    "norm_scale": true,
+    "multi_layer_full_coeff": true,
+    "multi_layer_groups": [
+      [
+        10,
+        14,
+        17,
+        19
+      ],
+      [
+        7,
+        10,
+        14,
+        17,
+        19,
+        22
+      ]
+    ]
+  },
+  "games": {
+    "n_per_game": 50,
+    "seed": 0,
+    "total": 100
+  },
+  "direction_extraction": {
+    "layer_fractions": [
+      0.25,
+      0.4,
+      0.5,
+      0.6,
+      0.7,
+      0.8,
+      0.9
+    ],
+    "use_game_context_refusal": true
+  },
+  "sae": {
+    "enabled": true,
+    "layer": "auto",
+    "d_hidden": 16384,
+    "k": 64,
+    "top_features": 16,
+    "n_prompts": 200,
+    "epochs": 500
+  },
+  "significance_alpha": 0.05,
+  "coherence_threshold": 0.7
+}

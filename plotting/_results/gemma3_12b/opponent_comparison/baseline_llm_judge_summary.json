@@ -1,0 +1,57 @@
+{
+  "condition": "baseline_llm_judge",
+  "n_total": 240,
+  "n_coherent": 240,
+  "n_refusal": 0,
+  "coherence_rate": 1.0,
+  "refusal_rate": 0.0,
+  "mean_metric": 0.5055000000000001,
+  "std_metric": 0.3097562213526416,
+  "per_game": {
+    "dictator": {
+      "n": 40,
+      "n_coherent": 40,
+      "coherence": 1.0,
+      "refusal": 0.0,
+      "mean_metric": 0.59775
+    },
+    "ultimatum_proposer": {
+      "n": 40,
+      "n_coherent": 40,
+      "coherence": 1.0,
+      "refusal": 0.0,
+      "mean_metric": 0.5825,
+      "opponent_reject_rate": 0.0,
+      "opponent_strategy": "llm_judge"
+    },
+    "ultimatum_responder": {
+      "n": 40,
+      "n_coherent": 40,
+      "coherence": 1.0,
+      "refusal": 0.0,
+      "mean_metric": 0.0,
+      "opponent_strategy": "scenario_fixed"
+    },
+    "trust": {
+      "n": 40,
+      "n_coherent": 40,
+      "coherence": 1.0,
+      "refusal": 0.0,
+      "mean_metric": 0.6627500000000001
+    },
+    "public_goods": {
+      "n": 40,
+      "n_coherent": 40,
+      "coherence": 1.0,
+      "refusal": 0.0,
+      "mean_metric": 0.44000000000000006
+    },
+    "prisoner_dilemma": {
+      "n": 40,
+      "n_coherent": 40,
+      "coherence": 1.0,
+      "refusal": 0.0,
+      "mean_metric": 0.75
+    }
+  }
+}

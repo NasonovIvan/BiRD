@@ -1,0 +1,90 @@
+{
+  "experiment": "auto_alpha",
+  "direction": {
+    "kind": "game_refusal_neg",
+    "layer": 16,
+    "ml_layers": [
+      16,
+      21,
+      25,
+      29
+    ]
+  },
+  "baseline_mean": 0.6046,
+  "target_lift": 0.15,
+  "coherence_threshold": 0.7,
+  "min_viable_alpha": 12.3281,
+  "best_result": {
+    "iteration": 6,
+    "alpha": 12.3281,
+    "steered_mean": 0.7722,
+    "lift": 0.1676,
+    "coherence": 1.0,
+    "refusal": 0.0,
+    "range_lo": 11.875,
+    "range_hi": 12.7812
+  },
+  "search_log": [
+    {
+      "iteration": 1,
+      "alpha": 15.5,
+      "steered_mean": 0.8244,
+      "lift": 0.2198,
+      "coherence": 0.9958,
+      "refusal": 0.0,
+      "range_lo": 1.0,
+      "range_hi": 30.0
+    },
+    {
+      "iteration": 2,
+      "alpha": 8.25,
+      "steered_mean": 0.6754,
+      "lift": 0.0708,
+      "coherence": 1.0,
+      "refusal": 0.0,
+      "range_lo": 1.0,
+      "range_hi": 15.5
+    },
+    {
+      "iteration": 3,
+      "alpha": 11.875,
+      "steered_mean": 0.7522,
+      "lift": 0.1476,
+      "coherence": 1.0,
+      "refusal": 0.0,
+      "range_lo": 8.25,
+      "range_hi": 15.5
+    },
+    {
+      "iteration": 4,
+      "alpha": 13.6875,
+      "steered_mean": 0.8211,
+      "lift": 0.2165,
+      "coherence": 1.0,
+      "refusal": 0.0,
+      "range_lo": 11.875,
+      "range_hi": 15.5
+    },
+    {
+      "iteration": 5,
+      "alpha": 12.7812,
+      "steered_mean": 0.789,
+      "lift": 0.1845,
+      "coherence": 1.0,
+      "refusal": 0.0,
+      "range_lo": 11.875,
+      "range_hi": 13.6875
+    },
+    {
+      "iteration": 6,
+      "alpha": 12.3281,
+      "steered_mean": 0.7722,
+      "lift": 0.1676,
+      "coherence": 1.0,
+      "refusal": 0.0,
+      "range_lo": 11.875,
+      "range_hi": 12.7812
+    }
+  ],
+  "converged": true
+}

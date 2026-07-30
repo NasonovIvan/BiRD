@@ -1,0 +1,58 @@
+{
+  "condition": "baseline",
+  "n_total": 1500,
+  "mean_metric": 0.5693066666666667,
+  "std_metric": 0.30070791912123335,
+  "coherence_rate": 1.0,
+  "refusal_rate": 0.0,
+  "per_game": {
+    "dictator": {
+      "n": 250,
+      "mean_metric": 0.5642,
+      "std_metric": 0.06788490259254998,
+      "coherence": 1.0,
+      "refusal": 0.0
+    },
+    "ultimatum_proposer": {
+      "n": 250,
+      "mean_metric": 0.5695999999999999,
+      "std_metric": 0.04664590014138434,
+      "coherence": 1.0,
+      "refusal": 0.0
+    },
+    "ultimatum_responder": {
+      "n": 250,
+      "mean_metric": 0.176,
+      "std_metric": 0.380820167533181,
+      "coherence": 1.0,
+      "refusal": 0.0
+    },
+    "trust": {
+      "n": 250,
+      "mean_metric": 0.61584,
+      "std_metric": 0.0988589621632758,
+      "coherence": 1.0,
+      "refusal": 0.0
+    },
+    "public_goods": {
+      "n": 250,
+      "mean_metric": 0.5582,
+      "std_metric": 0.1704193650968105,
+      "coherence": 1.0,
+      "refusal": 0.0
+    },
+    "prisoner_dilemma": {
+      "n": 250,
+      "mean_metric": 0.932,
+      "std_metric": 0.251745903640953,
+      "coherence": 1.0,
+      "refusal": 0.0
+    }
+  },
+  "n_per_game": 50,
+  "seed": 0,
+  "n_repeats": 5,
+  "greedy": false,
+  "temperature": 1.0,
+  "records_path": "/slot/sandbox/j/_tmp/script960_axcs/runs/rlhf_break/qwen25_7b/baseline_records.jsonl"
+}

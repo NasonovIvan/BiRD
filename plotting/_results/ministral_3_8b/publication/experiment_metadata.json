@@ -1,0 +1,69 @@
+{
+  "model_id": "ministral_3_8b",
+  "hf_name": "/slot/sandbox/d/in/data/0_data_unpacked",
+  "num_layers": 34,
+  "hidden_size": 4096,
+  "config_version": "v3",
+  "decoding": {
+    "greedy": false,
+    "temperature": 0.75,
+    "top_p": 0.9,
+    "n_repeats": 5
+  },
+  "sweep": {
+    "coeffs": [
+      2.0,
+      5.0,
+      8.0,
+      10.0,
+      15.0,
+      20.0
+    ],
+    "norm_scale": true,
+    "multi_layer_full_coeff": true,
+    "multi_layer_groups": [
+      [
+        13,
+        17,
+        20,
+        23
+      ],
+      [
+        8,
+        13,
+        17,
+        20,
+        23,
+        27
+      ]
+    ]
+  },
+  "games": {
+    "n_per_game": 50,
+    "seed": 0,
+    "total": 100
+  },
+  "direction_extraction": {
+    "layer_fractions": [
+      0.25,
+      0.4,
+      0.5,
+      0.6,
+      0.7,
+      0.8,
+      0.9
+    ],
+    "use_game_context_refusal": true
+  },
+  "sae": {
+    "enabled": true,
+    "layer": "auto",
+    "d_hidden": 16384,
+    "k": 64,
+    "top_features": 16,
+    "n_prompts": 200,
+    "epochs": 500
+  },
+  "significance_alpha": 0.05,
+  "coherence_threshold": 0.7
+}

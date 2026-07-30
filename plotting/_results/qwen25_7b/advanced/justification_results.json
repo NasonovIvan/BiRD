@@ -1,0 +1,28 @@
+{
+  "experiment": "justification_mode",
+  "n_pairs": 150,
+  "steering_config": {
+    "layer": 7,
+    "kind": "game_combined_ML7-10-14-17-19-22",
+    "coeff": 15.0,
+    "ml_layers": [
+      7,
+      10,
+      14,
+      17,
+      19,
+      22
+    ]
+  },
+  "baseline_mean_metric": 0.5382,
+  "steered_mean_metric": 0.7214,
+  "metric_lift": 0.1832,
+  "baseline_justification_avg_len": 127.77,
+  "steered_justification_avg_len": 240.94,
+  "baseline_aggression_keywords_avg": 0.83,
+  "steered_aggression_keywords_avg": 1.73,
+  "baseline_fairness_keywords_avg": 1.17,
+  "steered_fairness_keywords_avg": 0.89,
+  "keyword_shift_aggression": 0.91,
+  "keyword_shift_fairness": -0.29
+}

@@ -24,8 +24,8 @@
     },
     "prisoner_dilemma": {
       "n_baseline": 250,
-      "n_broken": 0,
-      "n_paired": 0,
+      "n_broken": 203,
+      "n_paired": 203,
       "baseline_mean": 0.812,
       "baseline_ci": [
         0.763469659653609,
@@ -112,8 +112,8 @@
     },
     "ultimatum_responder": {
       "n_baseline": 250,
-      "n_broken": 0,
-      "n_paired": 0,
+      "n_broken": 189,
+      "n_paired": 189,
       "baseline_mean": 1.0,
       "baseline_ci": [
         1.0,
@@ -135,8 +135,8 @@
   },
   "overall": {
     "n_baseline": 1500,
-    "n_broken": 751,
-    "n_paired": 751,
+    "n_broken": 1143,
+    "n_paired": 1143,
     "baseline_mean": 0.6638666666666666,
     "baseline_ci": [
       0.6504329361496146,

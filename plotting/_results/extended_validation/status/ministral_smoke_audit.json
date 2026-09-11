@@ -1,0 +1,24 @@
+{
+  "passed": true,
+  "runs": [
+    {
+      "run_dir": "runs/revision_protocol_smoke_20260909/ministral_3_8b",
+      "passed": true,
+      "failures": [],
+      "warnings": [
+        "split_101: SAE dead-feature fraction exceeds 0.5 at layer 8",
+        "split_101: SAE dead-feature fraction exceeds 0.5 at layer 14",
+        "split_101: SAE dead-feature fraction exceeds 0.5 at layer 17",
+        "split_101: SAE dead-feature fraction exceeds 0.5 at layer 20",
+        "split_101: SAE dead-feature fraction exceeds 0.5 at layer 24",
+        "split_101: SAE dead-feature fraction exceeds 0.5 at layer 27",
+        "split_101: SAE dead-feature fraction exceeds 0.5 at layer 31"
+      ],
+      "counts": {
+        "sae_layers": 7,
+        "candidates": 112,
+        "test_records": 1476
+      }
+    }
+  ]
+}

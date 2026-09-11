@@ -78,13 +78,14 @@ bird/
     ├── plot_cross_model.py                # Cross-model comparison figures (8 plot types)
     ├── plot_rlhf_break.py                 # Per-model RLHF-break publication figures
     ├── plot_steering_parameter_map.py     # Steering parameter map visualization
-    └── _results/                          # Pre-computed result data (6 models - need download)
+    └── _results/                          # Pre-computed result data and validation runs
         ├── gemma2_9b/
         ├── gemma3_12b/
         ├── llama31_8b/
         ├── llama32_3b/
         ├── ministral_3_8b/
-        └── qwen25_7b/
+        ├── qwen25_7b/
+        └── extended_validation/           # Context-disjoint and robustness validation data (not all data due to large weight)
 ```
 
 ---
@@ -219,6 +220,20 @@ python experiments/run_llm_opponent_experiment.py --model llama31_8b --opponent 
 
 ## Exporting Tables
 
+### Extended Validation Run Data
+
+The complete run artifacts used for the extended validation study are stored in
+[`plotting/_results/extended_validation/`](plotting/_results/extended_validation/).
+This dataset contains results for all six models and five context-disjoint
+partitions, including component ablations, direction-specificity controls,
+Russian-language transfer, five-round interaction tests, strict-output
+diagnostics, and independent quality assessment.
+
+The per-model data are organized under `<model>/split_<seed>/`. Aggregated
+statistics are in `analysis/`, while annotation data, execution logs, status
+records, and retained failed attempts are stored in their corresponding
+subdirectories.
+
 ### Export Tables from Local Data
 
 ```bash
@@ -322,3 +337,16 @@ runs/rlhf_break/<model>/
     ├── direction_cosine_similarity.json # Direction cosine similarity matrix
     └── sweep_coefficient_response.json  # Dose-response curves
 ```
+
+## Reviewer 1 revision experiments
+
+The revised manuscript draft, reviewer response, reproducible server commands,
+and resubmission checklist are documented in
+[article/revision/README.md](article/revision/README.md).
+The new runners are `experiments/run_revision_experiments.py` and
+`experiments/run_revision_validation.py`; analysis is separate from inference.
+These additional experiments have not been executed as part of the revision edit.
+The original result summary above uses “held-out” in the sense of fresh stochastic
+outputs; the audit in `article/revision/legacy_scenario_audit.json` finds overlapping
+prompt content between original direction extraction and final evaluation.
+The revised manuscript distinguishes this from evaluation on unseen contexts.

@@ -51,6 +51,7 @@ except ImportError:
 plt.rcParams.update({
     "font.size": 14,
     "font.family": "serif",
+    "pdf.fonttype": 42,
     "axes.labelsize": 15,
     "axes.titlesize": 16,
     "xtick.labelsize": 13,
@@ -226,7 +227,6 @@ def _ci_half_width(overall: dict, key: str) -> float:
 def plot_cross_model_behavior(models: list[str], data: dict, out_dir: str):
     """Grouped bars for the positive and reverse final-test samples."""
     pos_base, positive, rev_base, reverse = [], [], [], []
-    pos_base_err, positive_err, rev_base_err, reverse_err = [], [], [], []
     for m in models:
         d = data[m]
         po = (d["stat"] or {}).get("overall", {})
@@ -235,27 +235,22 @@ def plot_cross_model_behavior(models: list[str], data: dict, out_dir: str):
         positive.append(_safe(po.get("broken_mean")))
         rev_base.append(_safe(ro.get("baseline_mean")))
         reverse.append(_safe(ro.get("broken_mean")))
-        pos_base_err.append(_ci_half_width(po, "baseline_ci"))
-        positive_err.append(_ci_half_width(po, "broken_ci"))
-        rev_base_err.append(_ci_half_width(ro, "baseline_ci"))
-        reverse_err.append(_ci_half_width(ro, "broken_ci"))
 
     x = np.arange(len(models))
     width = 0.19
-    error_kw = {"elinewidth": 0.8, "capsize": 2, "capthick": 0.8}
     fig, ax = plt.subplots(figsize=(11, 5.5))
-    ax.bar(x - 1.5 * width, pos_base, width, yerr=pos_base_err,
+    ax.bar(x - 1.5 * width, pos_base, width,
            color=C_BASELINE, edgecolor="white", linewidth=0.5,
-           error_kw=error_kw, label="Higher-index-test baseline")
-    ax.bar(x - 0.5 * width, positive, width, yerr=positive_err,
+           label="Higher-index-test baseline")
+    ax.bar(x - 0.5 * width, positive, width,
            color=C_POSITIVE, edgecolor="white", linewidth=0.5,
-           error_kw=error_kw, label="Higher-index configuration")
-    ax.bar(x + 0.5 * width, rev_base, width, yerr=rev_base_err,
+           label="Higher-index configuration")
+    ax.bar(x + 0.5 * width, rev_base, width,
            color=C_REVERSE_BASELINE, edgecolor="white", linewidth=0.5,
-           error_kw=error_kw, label="Lower-index-test baseline")
-    ax.bar(x + 1.5 * width, reverse, width, yerr=reverse_err,
+           label="Lower-index-test baseline")
+    ax.bar(x + 1.5 * width, reverse, width,
            color=C_REVERSE, edgecolor="white", linewidth=0.5,
-           error_kw=error_kw, label="Lower-index configuration")
+           label="Lower-index configuration")
     ax.set_ylabel("Mean selfish/non-cooperative action index")
     ax.set_xticks(x)
     ax.set_xticklabels([_model_label(m) for m in models], rotation=20, ha="right",
@@ -364,20 +359,22 @@ def plot_cross_model_before_after(models: list[str], data: dict, out_dir: str):
                     safe_deltas.append(fm - bm)
         safe_means.append(float(np.mean(safe_deltas)) if safe_deltas else 0.0)
 
-    x = np.arange(len(models))
-    width = 0.35
-    fig, ax = plt.subplots(figsize=(10, 5))
-    ax.bar(x - width / 2, agg_means, width, color=C_POSITIVE,
-           edgecolor="white", linewidth=0.5, label="Higher-index configuration")
-    ax.bar(x + width / 2, safe_means, width, color=C_REVERSE,
-           edgecolor="white", linewidth=0.5, label="Lower-index configuration")
-    ax.axhline(y=0, color="gray", linestyle="-", linewidth=1.2, alpha=0.6)
-    ax.set_ylabel("Mean per-decision metric shift")
-    ax.set_xticks(x)
-    ax.set_xticklabels([_model_label(m) for m in models], rotation=20, ha="right",
-                       fontsize=12)
-    ax.grid(True, axis="y", alpha=0.3)
-    ax.legend(loc="best", frameon=False, fontsize=12)
+    y = np.arange(len(models))
+    height = 0.32
+    fig, ax = plt.subplots(figsize=(6.4, 6.2))
+    ax.barh(y - height / 2, agg_means, height, color=C_POSITIVE,
+            edgecolor="white", linewidth=0.5, label="Higher-index configuration")
+    ax.barh(y + height / 2, safe_means, height, color=C_REVERSE,
+            edgecolor="white", linewidth=0.5, label="Lower-index configuration")
+    ax.axvline(0, color="gray", linewidth=1.0, alpha=0.6)
+    ax.set_xlabel("Mean per-decision metric shift")
+    ax.set_yticks(y, [_model_label(m) for m in models])
+    ax.invert_yaxis()
+    ax.grid(True, axis="x", alpha=0.3)
+    ax.set_axisbelow(True)
+    ax.legend(loc="lower center", bbox_to_anchor=(0.5, 1.01),
+              frameon=False, fontsize=12)
+    fig.tight_layout()
     _save_fig(fig, out_dir, "cross_model_before_after")
 
 

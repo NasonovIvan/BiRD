@@ -163,8 +163,13 @@ class SteeringModel:
             os.environ["HF_HUB_OFFLINE"] = "1"
             os.environ["TRANSFORMERS_OFFLINE"] = "1"
 
+        tokenizer_kwargs = dict(trust_remote_code=True, token=token)
+        if "mistral" in self.mcfg.hf_name.lower():
+            # Recent transformers versions detect the historical Mistral
+            # tokenizer regex and recommend this compatibility correction.
+            tokenizer_kwargs["fix_mistral_regex"] = True
         self.tokenizer = AutoTokenizer.from_pretrained(
-            self.mcfg.hf_name, trust_remote_code=True, token=token
+            self.mcfg.hf_name, **tokenizer_kwargs
         )
         if self.tokenizer.pad_token is None:
             self.tokenizer.pad_token = self.tokenizer.eos_token
@@ -559,7 +564,9 @@ class SteeringModel:
 
     def _candidate_residual_templates(self) -> list[str]:
         """Yield the configured template plus structural variants to probe."""
-        tmpl = self.mcfg.residual_module_for_layer(0)  # e.g. "...layers.0"
+        # Keep the placeholder while probing; residual_module_for_layer(0)
+        # formats it eagerly and would make every candidate look layer-agnostic.
+        tmpl = self.mcfg.residual_module  # e.g. "...layers.{i}"
         variants = [tmpl]
         # Drop a redundant ".model" segment before ".layers" — some
         # multimodal checkpoints expose layers directly under the text
@@ -799,9 +806,13 @@ class SteeringModel:
             all_decoded.extend(
                 self.tokenizer.batch_decode(gen, skip_special_tokens=True)
             )
-            # Free the intermediate tensors so the next chunk has full VRAM.
+            # Drop Python references after every chunk.  Do not call
+            # ``torch.cuda.empty_cache()`` here: the caching allocator reuses
+            # these blocks for the next identically shaped batch, while
+            # emptying it forces expensive CUDA allocations on every batch.
+            # Callers can still clear the cache after an actual OOM before
+            # retrying with a smaller configured batch size.
             del enc, out, gen
-            torch.cuda.empty_cache()
         return all_decoded
 
     def generate_with_config(
@@ -951,6 +962,19 @@ class SteeringModel:
           * ``"mean"`` — legacy mean over all non-pad positions.
         """
         layers = list(layers)
+        batch_size = max(1, getattr(self.mcfg, "gen_batch_size", 32))
+        if len(prompts) > batch_size:
+            chunks = [
+                self.collect_residuals(
+                    prompts[i:i + batch_size], layers=layers,
+                    system=system, pool=pool,
+                )
+                for i in range(0, len(prompts), batch_size)
+            ]
+            return {
+                layer: torch.cat([chunk[layer] for chunk in chunks], dim=0)
+                for layer in layers
+            }
         if len(layers) < 2:
             # Single layer — nothing to cross-check; fall through to capture.
             pass

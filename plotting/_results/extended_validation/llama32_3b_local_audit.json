@@ -1,0 +1,53 @@
+{
+  "passed": true,
+  "runs": [
+    {
+      "run_dir": "/Users/ivnasonov/BiRD/runs/revision_measured_20260909/llama32_3b",
+      "passed": true,
+      "failures": [],
+      "warnings": [
+        "split_101: SAE dead-feature fraction exceeds 0.5 at layer 7",
+        "split_101: SAE dead-feature fraction exceeds 0.5 at layer 11",
+        "split_101: SAE dead-feature fraction exceeds 0.5 at layer 14",
+        "split_101: SAE dead-feature fraction exceeds 0.5 at layer 17",
+        "split_101: SAE dead-feature fraction exceeds 0.5 at layer 20",
+        "split_101: SAE dead-feature fraction exceeds 0.5 at layer 22",
+        "split_101: SAE dead-feature fraction exceeds 0.5 at layer 25",
+        "split_202: SAE dead-feature fraction exceeds 0.5 at layer 7",
+        "split_202: SAE dead-feature fraction exceeds 0.5 at layer 11",
+        "split_202: SAE dead-feature fraction exceeds 0.5 at layer 14",
+        "split_202: SAE dead-feature fraction exceeds 0.5 at layer 17",
+        "split_202: SAE dead-feature fraction exceeds 0.5 at layer 20",
+        "split_202: SAE dead-feature fraction exceeds 0.5 at layer 22",
+        "split_202: SAE dead-feature fraction exceeds 0.5 at layer 25",
+        "split_303: SAE dead-feature fraction exceeds 0.5 at layer 7",
+        "split_303: SAE dead-feature fraction exceeds 0.5 at layer 11",
+        "split_303: SAE dead-feature fraction exceeds 0.5 at layer 14",
+        "split_303: SAE dead-feature fraction exceeds 0.5 at layer 17",
+        "split_303: SAE dead-feature fraction exceeds 0.5 at layer 20",
+        "split_303: SAE dead-feature fraction exceeds 0.5 at layer 22",
+        "split_303: SAE dead-feature fraction exceeds 0.5 at layer 25",
+        "split_404: SAE dead-feature fraction exceeds 0.5 at layer 7",
+        "split_404: SAE dead-feature fraction exceeds 0.5 at layer 11",
+        "split_404: SAE dead-feature fraction exceeds 0.5 at layer 14",
+        "split_404: SAE dead-feature fraction exceeds 0.5 at layer 17",
+        "split_404: SAE dead-feature fraction exceeds 0.5 at layer 20",
+        "split_404: SAE dead-feature fraction exceeds 0.5 at layer 22",
+        "split_404: SAE dead-feature fraction exceeds 0.5 at layer 25",
+        "split_505: SAE dead-feature fraction exceeds 0.5 at layer 7",
+        "split_505: SAE dead-feature fraction exceeds 0.5 at layer 11",
+        "split_505: SAE dead-feature fraction exceeds 0.5 at layer 14",
+        "split_505: SAE dead-feature fraction exceeds 0.5 at layer 17",
+        "split_505: SAE dead-feature fraction exceeds 0.5 at layer 20",
+        "split_505: SAE dead-feature fraction exceeds 0.5 at layer 22",
+        "split_505: SAE dead-feature fraction exceeds 0.5 at layer 25"
+      ],
+      "counts": {
+        "sae_layers": 35,
+        "candidates": 5600,
+        "test_records": 221400,
+        "unique_explanation_bodies": 3410
+      }
+    }
+  ]
+}

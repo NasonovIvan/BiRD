@@ -262,7 +262,10 @@ def train_sae(acts: torch.Tensor, cfg, device) -> tuple[TopKSAE, dict]:
     opt = torch.optim.Adam(sae.parameters(), lr=lr)
 
     n = acts.shape[0]
-    var = float(((acts - acts.mean(dim=0)) ** 2).sum(dim=1).mean().item())
+    # ``recon_loss`` below is a mean over samples and coordinates.  Use the
+    # matching per-coordinate activation variance so FVU is dimensionless.
+    # The previous sum over coordinates understated FVU by ``d_model``.
+    var = float(((acts - acts.mean(dim=0)) ** 2).mean().item())
     # Per-feature steps-since-last-fired tracker (dead-feature detection).
     last_fired = torch.zeros(n_features, dtype=torch.long, device=device)
     dead_after = max(1, (n // max(1, batch_size)))  # ~1 epoch without firing

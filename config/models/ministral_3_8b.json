@@ -10,8 +10,9 @@
 // class), NOT a text-only MistralForCausalLM. Mistral3ForConditionalGeneration.model
 // is a Mistral3Model which stores the text decoder under .language_model (a
 // Ministral3TextModel with .model.layers). So the residual-stream hook point
-// is model.language_model.model.layers.{i}, not model.layers.{i} (which fails
-// with "AttributeError: 'Mistral3Model' object has no attribute 'layers'").
+// is model.language_model.layers.{i}, not model.layers.{i}.  Current
+// transformers exposes the Ministral3 decoder layers directly on
+// Mistral3ForConditionalGeneration.model.language_model.
 // The text_config has num_hidden_layers=34, hidden_size=4096.
 {
   "model": {
@@ -22,7 +23,7 @@
     "device_map": "cuda:0",
     "num_layers": 34,
     "hidden_size": 4096,
-    "residual_module": "model.language_model.model.layers.{i}",
+    "residual_module": "model.language_model.layers.{i}",
     "uses_chat_template": true
   },
 

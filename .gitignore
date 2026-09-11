@@ -1,1 +1,15 @@
 **/__pycache__/**
+.env
+**/resubmission/**
+**/article/**
+
+**/.DS_Store
+
+plotting/_results/extended_validation/failed_attempts/**
+plotting/_results/extended_validation/gemma2_9b/**
+plotting/_results/extended_validation/gemma3_12b/**
+plotting/_results/extended_validation/llama31_8b/**
+plotting/_results/extended_validation/llama32_3b/**
+plotting/_results/extended_validation/manual_annotation/**
+plotting/_results/extended_validation/ministral_3_8b/**
+plotting/_results/extended_validation/qwen25_7b/**

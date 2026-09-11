@@ -338,7 +338,7 @@ runs/rlhf_break/<model>/
     └── sweep_coefficient_response.json  # Dose-response curves
 ```
 
-## Reviewer 1 revision experiments
+## Revision experiments
 
 The revised manuscript draft, reviewer response, reproducible server commands,
 and resubmission checklist are documented in

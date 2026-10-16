@@ -1,5 +1,7 @@
 # BiRD — Bidirectional Residual Direction Steering
 
+**Paper:** [BiRD: Bidirectional Residual Direction Steering of Strategic Social Decisions in LLMs](https://doi.org/10.1109/ACCESS.2026.3742165), *IEEE Access*, 2026.
+
 Large language models increasingly make strategic choices in bargaining, allocation, trust, and cooperation settings. This project investigates whether these decisions can be systematically modulated through additive interventions in residual activations.
 
 **BiRD** (**Bi**directional **R**esidual **D**irection Steering) is a valid-answer-aware protocol that:
@@ -350,3 +352,18 @@ The original result summary above uses “held-out” in the sense of fresh stoc
 outputs; the audit in `article/revision/legacy_scenario_audit.json` finds overlapping
 prompt content between original direction extraction and final evaluation.
 The revised manuscript distinguishes this from evaluation on unseen contexts.
+
+## Citation
+
+If you use BiRD in your research, please cite our paper:
+
+```bibtex
+@article{nasonov2026bird,
+  author  = {Nasonov, Ivan and Glazkov, Nikita and Bezotetskii, Grigorii and Mozikov, Mikhail and Savchenko, Andrey V. and Makarov, Ilya},
+  title   = {{BiRD}: Bidirectional Residual Direction Steering of Strategic Social Decisions in {LLMs}},
+  journal = {IEEE Access},
+  year    = {2026},
+  doi     = {10.1109/ACCESS.2026.3742165},
+  url     = {https://doi.org/10.1109/ACCESS.2026.3742165}
+}
+```
